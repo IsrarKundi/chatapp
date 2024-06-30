@@ -1,3 +1,5 @@
+import 'package:chatcom/screens/chat_screen.dart';
+import 'package:chatcom/screens/login_screen.dart';
 import 'package:chatcom/screens/registration_screen.dart';
 import 'package:chatcom/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,14 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: RegistrationScreen(),
+      initialRoute: 'welcome_screen',
+      routes: {
+        'welcome_screen': (context) => WelcomeScreen(),
+        'login_screen': (context) => LoginScreen(),
+        'registration_screen': (context) => RegistrationScreen(),
+        'chat_screen': (context) => ChatScreen(),
+      }
+      ,
     );
   }
 }

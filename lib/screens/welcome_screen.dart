@@ -23,7 +23,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   height: 60.0,
                 ),
                 Text(
-                  'Flash Chat',
+                  'ChatHub',
                   style: TextStyle(
                     fontSize: 45.0,
                     fontWeight: FontWeight.w900,
@@ -42,7 +42,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 borderRadius: BorderRadius.circular(30.0),
                 child: MaterialButton(
                   onPressed: () {
-                    //Go to login screen.
+                    Navigator.pushNamed(context, 'login_screen');
                   },
                   minWidth: 200.0,
                   height: 42.0,
@@ -60,7 +60,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 elevation: 5.0,
                 child: MaterialButton(
                   onPressed: () {
-                    //Go to registration screen.
+                    Navigator.pushNamed(context, 'registration_screen');
                   },
                   minWidth: 200.0,
                   height: 42.0,
