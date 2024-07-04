@@ -1,4 +1,5 @@
 import 'package:chatcom/screens/welcome_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../components/rounded_button.dart';
@@ -10,6 +11,10 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  final _auth = FirebaseAuth.instance;
+  String email = '';
+  String password = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,8 +36,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               height: 48.0,
             ),
             TextField(
+              keyboardType: TextInputType.emailAddress,
               onChanged: (value) {
-                //Do something with the user input.
+                email = value;
               },
               decoration: ktextBoxDecoration.copyWith(
                 hintText: 'Enter tour email'
@@ -42,8 +48,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               height: 8.0,
             ),
             TextField(
+              obscureText: true,
               onChanged: (value) {
-                //Do something with the user input.
+                password = value;
               },
               decoration: ktextBoxDecoration.copyWith(
                 hintText: 'Enter tour password'
@@ -55,8 +62,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             RoundedButton(
               title: 'Register',
               color: Colors.blueAccent,
-              onPressed: () {
-                Navigator.pushNamed(context, 'registration_screen');
+              onPressed: () async {
+                try {
+                  final newUser = await _auth.createUserWithEmailAndPassword(
+                      email: email, password: password);
+                  if(newUser != null){
+                    Navigator.pushNamed(context, 'chat_screen');
+                  }
+                }
+                catch(e){
+                  print(e);
+                }
               },
             ),
           ],

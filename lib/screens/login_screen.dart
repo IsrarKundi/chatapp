@@ -1,6 +1,7 @@
 import 'package:chatcom/screens/welcome_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../components/rounded_button.dart';
 import '../constants.dart';
@@ -11,6 +12,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String email = '';
+  String password = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,9 +35,10 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 48.0,
             ),
             TextField(
-              onChanged: (value) {
-                //Do something with the user input.
-              },
+                keyboardType: TextInputType.emailAddress,
+                onChanged: (value) {
+                  email = value;
+                },
               decoration: ktextBoxDecoration.copyWith(
                 hintText: 'Enter tour email'
             )
@@ -43,9 +47,10 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 8.0,
             ),
             TextField(
-              onChanged: (value) {
-                //Do something with the user input.
-              },
+                obscureText: true,
+                onChanged: (value) {
+                  password = value;
+                },
               decoration: ktextBoxDecoration.copyWith(
                 hintText: 'Enter tour password'
             )
