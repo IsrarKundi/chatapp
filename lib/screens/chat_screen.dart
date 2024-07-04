@@ -64,7 +64,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   TextButton(
                     onPressed: () {
-                      //Implement send functionality.
+                      print(loggedInUser.email);
                     },
                     child: Text(
                       'Send',

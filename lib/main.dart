@@ -7,8 +7,20 @@ import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const MyApp());
+  try {
+    await Firebase.initializeApp(
+        options: FirebaseOptions(
+          apiKey: 'AIzaSyABokkMlTLT3VxJY3w_DmbF6CgxL19xaVQ',
+          appId: '1:912417395823:android:ae0aeff1e6381d9edb699a',
+          messagingSenderId: '912417395823',
+          projectId: 'chathub-45b8d',
+          storageBucket: 'chathub-45b8d.appspot.com',
+        )
+    );
+    runApp(MyApp());
+  } catch (e) {
+    print('Firebase initialization error: $e');
+  }
 }
 
 class MyApp extends StatelessWidget {
