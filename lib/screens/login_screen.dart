@@ -12,6 +12,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _auth = FirebaseAuth.instance;
   String email = '';
   String password = '';
   @override
@@ -61,8 +62,17 @@ class _LoginScreenState extends State<LoginScreen> {
             RoundedButton(
               title: 'Log In',
               color: Colors.lightBlueAccent,
-              onPressed: () {
-                Navigator.pushNamed(context, 'login_screen');
+              onPressed: () async {
+                try {
+                  final user = await _auth.signInWithEmailAndPassword(
+                      email: email, password: password);
+                  if(user != null){
+                    Navigator.pushNamed(context, 'chat_screen');
+                  }
+                }
+                catch(e){
+                  print(e);
+                }
               },
             ),
           ],
