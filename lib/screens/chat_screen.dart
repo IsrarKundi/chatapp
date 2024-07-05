@@ -30,7 +30,14 @@ class _ChatScreenState extends State<ChatScreen> {
     }catch(e){
       print(e);
     }
+  }
 
+  void messageStream() async {
+    await for(var snapshot in _fireStore.collection('messages').snapshots()){
+      for(var message in snapshot.docs){
+        print(message.data);
+      }
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -53,6 +60,31 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            StreamBuilder(
+                stream: _fireStore.collection('messages').snapshots(),
+                builder: (context, snapshot){
+                  if(!snapshot.hasData){
+                    return Center(
+                      child: CircularProgressIndicator(),
+
+                    );
+                  }
+                  final messages = snapshot.data?.docs;
+                  List<Text> messageWidgets = [];
+                  for(var message in messages!){
+                    final messageData = message.data() as Map<String, dynamic>;
+                    final messageText = messageData['text'];
+                    final messageSender = messageData['sender'];
+
+                    final messageWidget =
+                        Text('$messageText from $messageSender');
+                    messageWidgets.add(messageWidget);
+                  }
+                  return Column(
+                    children: messageWidgets,
+                  );
+
+                }),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
