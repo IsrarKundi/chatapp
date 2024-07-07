@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 final _fireStore = FirebaseFirestore.instance;
+late User loggedInUser;
 
 
 class ChatScreen extends StatefulWidget {
@@ -22,7 +23,6 @@ class _ChatScreenState extends State<ChatScreen> {
   late TextEditingController messageTextController = TextEditingController();
   late String messageText;
   final _auth = FirebaseAuth.instance;
-  late User loggedInUser;
   void getCurrentUser() async {
     try {
       final user = await _auth.currentUser;
@@ -115,19 +115,25 @@ class MessagesStream extends StatelessWidget {
 
             );
           }
-          final messages = snapshot.data?.docs;
+          final messages = snapshot.data?.docs.reversed;
           List<MessageBubble> messageBubbles = [];
           for(var message in messages!){
             final messageData = message.data() as Map<String, dynamic>;
             final messageText = messageData['text'];
             final messageSender = messageData['sender'];
 
-            final messageBubble = MessageBubble(sender: messageSender, message: messageText);
+            final currentUser = loggedInUser.email;
+
+            final messageBubble = MessageBubble(
+                sender: messageSender,
+                message: messageText,
+                isMe: currentUser == messageSender,);
 
             messageBubbles.add(messageBubble);
           }
           return Expanded(
             child: ListView(
+              reverse: true,
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               children: messageBubbles,
             ),
@@ -139,16 +145,17 @@ class MessagesStream extends StatelessWidget {
 
 
 class MessageBubble extends StatelessWidget {
-  MessageBubble({required this.sender, required this.message});
+  MessageBubble({required this.sender, required this.message, required this.isMe});
   final String sender;
   final String message;
+  final bool isMe;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           Text(sender, style: TextStyle(
             fontSize: 12,
@@ -156,13 +163,21 @@ class MessageBubble extends StatelessWidget {
           ),),
           Material(
             elevation: 05,
-            borderRadius: BorderRadius.circular(30),
-            color: Colors.lightBlueAccent,
+            borderRadius: isMe ? BorderRadius.only(
+              topLeft: Radius.circular(30),
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ) : BorderRadius.only(
+              topRight: Radius.circular(30),
+              topLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+            color: isMe ? Colors.lightBlueAccent : Colors.white,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Text(message, style: TextStyle(
                 fontSize: 15,
-                color: Colors.white,
+                color: isMe ? Colors.white : Colors.black54,
               ),),
             ),
           ),
