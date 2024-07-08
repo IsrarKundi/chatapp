@@ -84,6 +84,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       _fireStore.collection('messages').add({
                         'text': messageText,
                         'sender': loggedInUser.email,
+                        'timestamp': FieldValue.serverTimestamp(),
+
                       });
                     },
                     child: Text(
@@ -107,12 +109,11 @@ class MessagesStream extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: _fireStore.collection('messages').snapshots(),
+        stream: _fireStore.collection('messages').orderBy('timestamp').snapshots(),
         builder: (context, snapshot){
           if(!snapshot.hasData){
             return Center(
               child: CircularProgressIndicator(),
-
             );
           }
           final messages = snapshot.data?.docs.reversed;
@@ -125,9 +126,10 @@ class MessagesStream extends StatelessWidget {
             final currentUser = loggedInUser.email;
 
             final messageBubble = MessageBubble(
-                sender: messageSender,
-                message: messageText,
-                isMe: currentUser == messageSender,);
+              sender: messageSender,
+              message: messageText,
+              isMe: currentUser == messageSender,
+            );
 
             messageBubbles.add(messageBubble);
           }
@@ -138,8 +140,8 @@ class MessagesStream extends StatelessWidget {
               children: messageBubbles,
             ),
           );
-
-        });
+        }
+    );
   }
 }
 
